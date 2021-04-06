@@ -58,7 +58,7 @@ import SearchBar from '../../components/bookshelf/SearchBar'
 import ShelfList from '../../components/bookshelf/ShelfList'
 import Bottom from '../../components/home/bottom'
 import EditBottom from '../../components/bookshelf/EditBottom'
-// import {getBookCatagory} from '../../services/bookServices'
+import {getShelfData} from '../../services/bookServices'
 export default {
   components: {
     SearchBar,
@@ -105,45 +105,8 @@ export default {
         }
       ],
       mark: 0,
-      currentReadList: [
-        {
-          fileName: 1,
-          title: '上下五千年',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        },
-        {
-          fileName: 2,
-          title: '钢铁是怎样炼成的',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        },
-        {
-          fileName: 3,
-          title: '红楼梦',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        },
-        {
-          fileName: 4,
-          title: '三国演义',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        }
-      ],
-      completeReadList: [
-        {
-          fileName: 1,
-          title: '三国演义',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        },
-        {
-          fileName: 2,
-          title: '西游记',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        },
-        {
-          fileName: 3,
-          title: '水浒传',
-          img: 'cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u0086.jpg'
-        }
-      ],
+      currentReadList: [],
+      completeReadList: [],
       shelfList: []
     }
   },
@@ -192,15 +155,24 @@ export default {
       this.shelfList = this.completeReadList
     },
     handleChoose (haveChooseAll) {
+      console.log('hi..')
       this.shouldBeSelectedAll = haveChooseAll
     }
   },
+  mounted () {
+    getShelfData().then(response => {
+      this.completeReadList = response.data.data.completeReadList
+      this.currentReadList = response.data.data.currentReadList
+      console.log(this.completeReadList, this.currentReadList)
+      this.shelfList = this.currentReadList
+      if ((JSON.stringify(this.currentReadList[this.currentReadList.length - 1]) !== '{}')) {
+        this.shelfList.push({})
+      }
+      this.currentReadList = this.shelfList
+    })
+  },
   onShow () {
-    this.shelfList = this.currentReadList
-    if ((JSON.stringify(this.currentReadList[this.currentReadList.length - 1]) !== '{}')) {
-      this.shelfList.push({})
-    }
-    this.currentReadList = this.shelfList
+
   }
 }
 </script>

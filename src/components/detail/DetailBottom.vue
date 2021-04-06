@@ -13,7 +13,7 @@
       <button
         class="detail-btn-read"
         round
-        @click="() => readBook()"
+        @click="readBook(file)"
       >
         阅读
       </button>
@@ -24,14 +24,20 @@
 <script>
   export default {
     props: {
-      isInShelf: Boolean
+      isInShelf: Boolean,
+      file: String
     },
     methods: {
       handleShelf () {
         this.$emit('handleShelf')
       },
-      readBook () {
-        this.$emit('readBook')
+      readBook (file) {
+        this.$router.push({
+          path: '/pages/catalog/main',
+          query: {
+            fileName: file
+          }
+        })
       }
     }
   }

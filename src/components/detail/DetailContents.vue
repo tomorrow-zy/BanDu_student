@@ -9,7 +9,6 @@
       <div class="brief-intro">{{book.shortIntro}}</div>
       <div class="infor">
         <div>分类：{{book.catagory}}</div>
-        <div>字数：{{book.textnumber}}</div>
       </div>
     </div>
   </div>
@@ -63,11 +62,7 @@
     line-height: 25px;
   }
   .infor{
-    padding: 30px 30px 0 30px;
-    /* display: flex;
-    justify-content: space-between; */
-  }
-  .infor div{
+    padding: 20px 0 0 30px;
     font-family: SimHei;
     font-size: 14px;
     font-weight: 1000;

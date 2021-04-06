@@ -1,15 +1,14 @@
 <template>
   <div class="background">
     <div class="book-detail">
-      <DetailBook :book="book" :booktitle="bookname"/>
+      <DetailBook v-if="book" :book="book"/>
       <div class="capacity">
-        <div class="diff">难度系数：327</div>
-        <div class="range">适合阅读能力范围：xxx-xxx</div>
+        <div class="range">适合阅读能力范围：{{book.apply_to}}</div>
       </div>
     </div>
     <DetailContents :book="book"/>
-    <DetailComments :book="book"/>
-    <DetailBottom/>
+    <DetailComments :comments="comments"/>
+    <DetailBottom :file="bookname"/>
   </div>
 </template>
 
@@ -18,7 +17,7 @@ import DetailBook from '../../components/detail/DetailBook'
 import DetailContents from '../../components/detail/DetailContents'
 import DetailBottom from '../../components/detail/DetailBottom'
 import DetailComments from '../../components/detail/DetailComments'
-import {getBookDetail} from '../../services/bookServices'
+import {getBookInfo} from '../../services/bookServices'
 export default {
   components: {
     DetailBook,
@@ -30,21 +29,18 @@ export default {
     return {
       book: {},
       bookname: '',
-      contents: [],
+      comments: [],
       isInShelf: false
     }
   },
-  methods: {
-    getBookDetail () {
-      const {fileName} = this.$route.query
-      this.bookname = fileName
-      getBookDetail(fileName).then(response => {
-        this.book = response.data.data
-      })
-    }
-  },
-  mounted () {
-    this.getBookDetail()
+  async mounted () {
+    const {fileName} = this.$route.query
+    this.bookname = fileName
+    await getBookInfo(this.bookname).then(response => {
+      console.log(response)
+      this.book = response.data[0].data
+      this.comments = response.data[0].comments
+    })
   }
 }
 </script>

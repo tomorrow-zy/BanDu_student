@@ -6,14 +6,13 @@
           <div class="detail">
             <div class="row">
               <div class="bookname">{{item.title}}</div>
-              <div class="price">340书币</div>
             </div>
             <div class="row">
-              <div class="author">作者：xxx</div>
+              <div class="author">作者：{{item.author}}</div>
             </div>
             <div class="row">
-              <div class="grade">评分：{{item.reading}}</div>
-              <div class="grade">适合：xx</div>
+              <div class="grade">热度：{{item.hot_rate}}人阅读</div>
+              <div class="grade">适合：{{item.apply_to}}</div>
             </div>
           </div>
         </div>

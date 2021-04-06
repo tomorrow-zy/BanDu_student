@@ -13,7 +13,7 @@
         class="detail-btn-delete"
         @click="() => deleteBook()"
       >
-        删除
+        移除
       </button>
     </div>
   </div>

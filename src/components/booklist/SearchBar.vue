@@ -47,7 +47,7 @@ export default {
     },
     hotSearch: {
       type: String,
-      default: '输入书名'
+      default: '暂未实现'
     }
   },
   data () {

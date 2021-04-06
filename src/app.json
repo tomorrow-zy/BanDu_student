@@ -1,11 +1,15 @@
 {
   "pages": [
+
     "pages/index/main",
     "pages/detail/main",
     "pages/bookshelf/main",
     "pages/allbooks/main",
     "pages/my/main",
+    "pages/catalog/main",
+    "pages/read/main",
     "pages/message/main"
+
   ],
   "window": {
     "backgroundTextStyle": "light",

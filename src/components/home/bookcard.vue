@@ -82,10 +82,11 @@ export default {
 }
 .bookcard-text{
   margin-top: 13px;
-  height: 10px;
-  line-height: 10px;
+  height: 15px;
+  line-height: 15px;
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 30;
+  overflow:hidden
 }
 </style>

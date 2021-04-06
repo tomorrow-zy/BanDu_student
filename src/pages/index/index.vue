@@ -93,9 +93,7 @@ import HomeBook from '../../components/home/homebook'
 import Banner from '../../components/home/banner'
 import Bottom from '../../components/home/bottom'
 import Auth from '../../components/base/Auth'
-// import Report from '../../components/home/report-chart1'
 import { getSetting, getUserInfo, setStorageSync, getStorageSync, getOpenId } from '../../services/wechat'
-import { getHomeData } from '../../services/bookServices'
 export default {
   components: {
     HomeBook,
@@ -137,6 +135,19 @@ export default {
         }
       })
     },
+    getSetting () {
+      getSetting(
+        'userInfo',
+        () => {
+          this.isAuth = true
+          // showLoading('正在加载')
+          this.getUserInfo()
+        },
+        () => {
+          this.isAuth = false
+        }
+      )
+    },
     getUserInfo () {
       getUserInfo(
         (userInfo) => {
@@ -154,30 +165,28 @@ export default {
         }
       )
     },
-    getHomeData () {
-      getHomeData().then(response => {
-        this.library = response.data.data.library
-        this.recommend = response.data.data.recommend
-        this.saying = response.data.data.saying
-        this.saying_author = response.data.data.saying_author
-      })
+    getBookData () {
+      wx.cloud.database().collection('book_index').limit(6).get()
+        .then(res => {
+          this.library = res.data.slice(0, 3)
+          this.recommend = res.data.slice(3, 6)
+        }).catch(err => {
+          console.log('请求书籍信息失败', err)
+        })
     },
-    getSetting () {
-      getSetting(
-        'userInfo',
-        () => {
-          this.isAuth = true
-          // showLoading('正在加载')
-          this.getUserInfo()
-        },
-        () => {
-          this.isAuth = false
-        }
-      )
+    getSayingData () {
+      wx.cloud.database().collection('saying').limit(1).get()
+        .then(res => {
+          this.saying = res.data[0].saying_content
+          this.saying_author = res.data[0].saying_author
+        }).catch(err => {
+          console.log('请求名言警句失败', err)
+        })
     },
     init () {
       this.getSetting()
-      this.getHomeData()
+      this.getBookData()
+      this.getSayingData()
     }
   },
   mounted () {

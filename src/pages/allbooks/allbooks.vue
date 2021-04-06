@@ -29,8 +29,8 @@
     </div>
     <div v-if="isClick2" class="all-kinds-of-difficulty" @click.stop="isClick2=false">
       <div class="difficuty-selection">
-        <div class="selection-button" v-for="(item,index) in catagoryArray" :key="index" @click="isSelect2(item.catalog,index,item.id)">
-          <div :class="{'active':index===mark2}">{{item.catalog}}</div>                                 
+        <div class="selection-button" v-for="(item,index) in catagoryArray" :key="index" @click="isSelect2(item,index)">
+          <div :class="{'active':index===mark2}">{{item}}</div>                                 
         </div>
       </div>
       <div class="hide"></div>
@@ -41,8 +41,7 @@
 <script>
 import SearchBar from '../../components/booklist/SearchBar'
 import ListDetail from '../../components/booklist/ListDetail'
-import {getBookCatagory, getBookContent} from '../../services/bookServices'
-
+import {getBookIndex} from '../../services/bookServices'
 export default {
   components: {
     SearchBar,
@@ -57,27 +56,29 @@ export default {
       mark2: 0,
       selection1: '全部难度',
       selection2: '全部类型',
-      difficultyArray: [
-        '全部难度', '1~2年级', '3~4年级', '5~6年级'
-      ],
+      difficultyArray: [],
       catagoryArray: [],
       isClick1: false,
       isClick2: false,
       contentArray: []
     }
   },
-  async mounted () {
-    await getBookCatagory().then(response => {
-      this.catagoryArray = response.data.result
-      this.catagoryArray.unshift({
-        catalog: '全部类型',
-        id: 111
+  mounted () {
+    wx.cloud.database().collection('book_index').get()
+      .then(res => {
+        this.contentArray = res.data
+      }).catch(err => {
+        console.log('请求书籍信息失败', err)
       })
-    })
-    await getBookContent().then(response => {
-      console.log(response.data.result.data)
-      this.contentArray = response.data.result.data
-    })
+    wx.cloud.database().collection('catagory').doc('b00064a760658e090cdc9d754ca08647')
+      .get().then(res => {
+        this.catagoryArray = res.data.type
+        this.catagoryArray.unshift('全部类型')
+        this.difficultyArray = res.data.difficulty
+        this.difficultyArray.unshift('全部难度')
+      }).catch(err => {
+        console.log('请求书籍信息失败', err)
+      })
   },
   methods: {
     onClear () {
@@ -86,15 +87,39 @@ export default {
     isSelect1 (s, i) {
       this.mark1 = i
       this.selection1 = s
+      if (this.selection1 === '全部难度') {
+        getBookIndex().then(res => {
+          this.contentArray = res.data
+        })
+      } else {
+        wx.cloud.database().collection('book_index').where({
+          apply_to: this.selection1
+        }).get()
+          .then(res => {
+            this.contentArray = res.data
+          }).catch(err => {
+            console.log('请求书籍信息失败', err)
+          })
+      }
     },
-    isSelect2 (s, i, id) {
+    isSelect2 (s, i) {
       this.mark2 = i
       this.selection2 = s
-      getBookContent(id).then(response => {
-        console.log(response.data.result.data)
-        this.contentArray = response.data.result.data
-        this.contentId = id
-      })
+      const _ = wx.cloud.database().command
+      if (this.selection2 === '全部类型') {
+        getBookIndex().then(res => {
+          this.contentArray = res.data
+        })
+      } else {
+        wx.cloud.database().collection('book_index').where({
+          type: _.elemMatch(_.eq(this.selection2))
+        }).get()
+          .then(res => {
+            this.contentArray = res.data
+          }).catch(err => {
+            console.log('请求书籍信息失败', err)
+          })
+      }
     },
     clickChange1 () {
       this.isClick2 = false

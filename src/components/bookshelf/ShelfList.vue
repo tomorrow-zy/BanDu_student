@@ -36,9 +36,9 @@
       beSelected: Boolean
     },
     methods: {
-      // gotoHome () {
-      //   this.$router.push('/pages/index/main')
-      // },
+      gotoHome () {
+        this.$router.push('/pages/index/main')
+      }
       // gotoBookDetail (book) {
       //   this.$router.push({ path: '/pages/detail/main', query: { fileName: book.fileName } })
       // }
@@ -51,6 +51,7 @@
   padding: 0px 10px 20px 15px;
 }
 .shelf-list-inner {
+  margin-bottom: 80px;
   display: flex;
   flex-wrap: wrap;
   /*justify-content: space-between;*/
@@ -61,12 +62,12 @@
   justify-content: center;
   flex: 0 0 33.33%;
   width: 33.33%;
-  padding: 5px 12px 0 12px;
+  padding: 5px 12px 5px 12px;
   box-sizing: border-box;
 }
 .shelf-book-title {
   margin-top: 10px;
-  height: 28px;
+  height: 12px;
   width: 85px;
   font-size: 12px;
   color: #333;

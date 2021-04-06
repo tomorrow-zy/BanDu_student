@@ -7,14 +7,14 @@
     </div>
     <div class="detail-info-r">
       <div class="1st">
-        <div class="book-title">{{booktitle}}</div>
+        <div class="book-title">{{book.title}}</div>
         <button class="add-shelf">加入书架</button>
       </div>
       <div class="2nd">
         <div class="book-author">作者：{{book.author}}</div>
       </div>
       <div class="book-labels">
-        <span v-for="(label,i) in book.labels" :key="i" >{{label}}</span>
+        <span v-for="(label,i) in book.label" :key="i" >{{label}}</span>
       </div>
       <div class="4th">
         <div class="detail-stat-rate-wrapper">
@@ -27,10 +27,6 @@
           >
           </van-rate>
           <span class="detail-stat-rate">9.5分</span>
-        </div>
-        <div class="reading-practice">
-          <img class="practice-label" src="cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/detail/u187.png">
-          <div class="practice-text">阅读练习</div>
         </div>
       </div> 
     </div>
@@ -45,18 +41,7 @@
       BookCard
     },
     props: {
-      book: Object,
-      booktitle: String
-    },
-    data () {
-      return {
-      }
-    },
-    methods: {
-      getBookLabels () {
-      }
-    },
-    mounted () {
+      book: Object
     }
   }
 </script>
@@ -65,7 +50,6 @@
 .detail-info {
   display: flex;
   padding: 15px 20px 10px 20px; 
-
 }
 .detail-info-l {
  padding-right: 10px;
@@ -106,12 +90,12 @@
 }
 .book-labels span{
   border-radius:5px;
-  width: 35px;
-  height: 16px;
+  width: 40px;
+  height: 20px;
   display: inline-block;
-  margin: 30px 10px 5px 0;
+  margin: 25px 10px 10px 0;
   font-size: 10px;
-  line-height:16px;
+  line-height:20px;
   text-align: center;
   overflow: hidden;
   color: #666;
@@ -125,13 +109,5 @@
   margin: 2px 30px 0 5px;
   font-size: 15px;
   font-weight: 500;
-}
-.practice-label{
-  width: 18px;
-  height: 18px;
-}
-.practice-text{
-  margin: 5px 0 0 5px;
-  font-size: 10px;
 }
 </style>

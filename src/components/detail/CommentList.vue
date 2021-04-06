@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div class="commentlist-wrapper" v-for="(label,i) in book.comments" :key="i" >
+    <div class="commentlist-wrapper" v-for="(label,i) in list" :key="i" >
       <div class="header">
         <van-icon 
           class="comment-author"
           name="https://b.yzcdn.cn/vant/icon-demo-1126.png" 
           size="28px"
         />
-        <div class="nickname">xxx</div>
+        <div class="nickname">{{label.nickname}}</div>
       </div>
       <div class="comment-content">
-        <span >{{label}}</span>
+        <span >{{label.content}}</span>
       </div>
     </div>
   </div>
@@ -19,15 +19,7 @@
 <script>
 export default {
   props: {
-    book: Object
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
-  },
-  mounted () {
+    list: Array
   }
 }
 </script>
@@ -38,10 +30,15 @@ export default {
 }
 .header{
   display: flex;
-  margin-top: 10px;
+  margin: 10px 0 6px 0;
+  height: 28px;
+}
+.nickname{
+  font-size: 16px;
+  line-height:28px;
 }
 .comment-author{
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .comment-content{
   margin-left: 30px;

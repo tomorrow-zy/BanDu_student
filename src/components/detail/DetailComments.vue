@@ -1,14 +1,10 @@
 <template>
   <div class="comments-wrapper">
-    <div class="comments-corner">
-      <div class="comments-text">写书评</div>
-      <img src="cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/detail/u146.png" class="comments-label">
-    </div>
     <div class="comments-title">
-      精彩书评
+      名家点评
       <img src="cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/detail/u103.png" class="under-line">
     </div>
-    <CommentList :book="book"/>
+    <CommentList :list="comments"/>
   </div>
 </template>
 
@@ -19,7 +15,7 @@ export default {
     CommentList
   },
   props: {
-    book: Object
+    comments: Array
   }
 }
 </script>
