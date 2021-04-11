@@ -22,3 +22,12 @@ export default {
   formatNumber,
   formatTime
 }
+
+export function getWeekByDate (date) {
+  // console.log('index.js', date)
+  var week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  var newdate = new Date(date)
+  // newdate.setDate(newdate.getDate())
+  let day = newdate.getDay()
+  return week[day]
+}

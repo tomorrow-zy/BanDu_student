@@ -1,19 +1,10 @@
 <template>
   <div class="shelf-list-wrapper">
     <div class="shelf-list-inner">
-      <div
-        class="shelf-book"
-        v-for="(book,index) in shelflist"
-        :key="index"
-      >
-        <BookCard 
-          v-if="book && book.img" 
-          :src="book.img" 
-          :editing="editing" 
-          :shelflist="shelflist"
-          :beSelected="beSelected"
-        />
-        <div class="shelf-book-title" v-if="book && book.title">{{book.title}}</div>
+      <div class="shelf-book" v-for="(book,index) in shelflist" :key="index">
+        <div v-if="book.title" @click="onBookClick(book)">
+          <BookCard :src="book.src" :text="book.title"/>
+        </div>
         <div class="shelf-book-add" v-if="!book.title" @click="gotoHome">
           <div class="shelf-book-add-wrapper">
             <div class="shelf-book-add-x"></div>
@@ -27,21 +18,24 @@
 </template>
 
 <script>
-  import BookCard from './BookCardInShelf'
+  import BookCard from '../../components/home/bookcard'
   export default {
     components: { BookCard },
     props: {
-      shelflist: Array,
-      editing: Boolean,
-      beSelected: Boolean
+      shelflist: Array
     },
     methods: {
       gotoHome () {
         this.$router.push('/pages/index/main')
+      },
+      onBookClick (book) {
+        this.$router.push({
+          path: '/pages/detail/main',
+          query: {
+            fileName: book.title
+          }
+        })
       }
-      // gotoBookDetail (book) {
-      //   this.$router.push({ path: '/pages/detail/main', query: { fileName: book.fileName } })
-      // }
     }
   }
 </script>
@@ -66,20 +60,18 @@
   box-sizing: border-box;
 }
 .shelf-book-title {
-  margin-top: 10px;
-  height: 12px;
-  width: 85px;
-  font-size: 12px;
-  color: #333;
-  overflow: hidden;
-  text-overflow: clip;
+  margin-top: 13px;
+  height: 15px;
+  line-height: 15px;
   text-align: center;
-  line-height: 14px;
+  font-size: 15px;
+  font-weight: 30;
+  overflow:hidden;
 }
 .shelf-book-add {
-  margin-top: 5px;
-  width: 85px;
-  height: 121px;
+  /* margin-top: 5px; */
+  width: 84px;
+  height: 120px;
   background: #e9e8e8;
   border-radius: 5px;
   box-sizing: border-box;

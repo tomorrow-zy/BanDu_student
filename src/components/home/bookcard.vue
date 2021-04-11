@@ -1,5 +1,5 @@
 <template>
-  <div class="bookcard" @click="onClick">
+  <div class="bookcard">
     <img 
     class="bookcard-picture" 
     src="/static/index/u107.png" 
@@ -58,9 +58,6 @@ export default {
     onError () {
       this.isLoading = false
       this.error = true
-    },
-    onClick () {
-      this.$emit('onClick')
     }
   }
 }

@@ -8,9 +8,9 @@
       >
         <div class="message-nt-wrapper">
           <div class="message-name" v-if="message && message.messageName">{{message.messageName}}</div>
-          <div class="message-time" v-if="message && message.time">{{message.time}}</div>
+          <div class="message-time" v-if="message && message.messageTime">{{message.messageTime}}</div>
         </div>
-        <div class="message-content" v-if="message && message.content">{{message.content}}</div>
+        <div class="message-content" v-if="message && message.messageContent">{{message.messageContent}}</div>
       </div>
     </div>
   </div>
@@ -20,6 +20,10 @@
   export default {
     props: {
       messageList: Array
+    },
+    data () {
+      return {
+      }
     },
     methods: {
     }
@@ -48,9 +52,8 @@
   color: #999999;
 }
 .message-content {
-  padding: 3px 5px 10px 5px;
-  font-size: 12px;
+  padding: 10px;
+  font-size: 18px;
   color: #666666;
-  text-indent: 2em;
 }
 </style>

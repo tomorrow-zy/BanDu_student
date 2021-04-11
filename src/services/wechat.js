@@ -1,37 +1,3 @@
-// import { getOpenId } from './index'
-import {get} from '@/utils/request'
-export function getSetting (auth, onSuccess, onFail) {
-  mpvue.getSetting({
-    success (res) {
-      console.log(res)
-      if (res.authSetting[`scope.${auth}`]) {
-        onSuccess(res)
-      } else {
-        onFail(res)
-      }
-    },
-    fail (res) {
-      console.log(res) // 直接抛出异常
-    }
-  })
-}
-
-export function getUserInfo (onSuccess, onFail) {
-  mpvue.getUserInfo({
-    success (res) {
-      console.log(res)
-      let { userInfo } = res
-      if (userInfo) {
-        onSuccess(userInfo)
-      } else {
-        onFail(res)
-      }
-    },
-    fail (res) {
-      console.log(res) // 直接抛出异常
-    }
-  })
-}
 
 export function setStorageSync (key, data) {
   mpvue.setStorageSync(key, data)
@@ -42,63 +8,21 @@ export function getStorageSync (key) {
 }
 
 export function getOpenId () {
-  mpvue.login({
-    success (res) {
-      console.log(res)
-    },
-    fail (res) {
-      console.log(res)
-    }
-  })
-}
-// export function getUseropenId (callback) {
-//   mpvue.login({
-//     success (res) {
-//       console.log(res)
-//       if (res.code) {
-//         const { code } = res
-//         getOpenId(code).then(response => {
-//           const { data:
-//             {data: {openid}}
-//           } =
-//           response
-//           setStorageSync('openId', openid)
-//           callback && callback(openid)
-//         }).catch(err => {
-//           console.log(err)
-//         })
-//       } else {
-//         console.log(res) // 直接抛出异常
-//       }
-//     },
-//     fail (res) {
-//       console.log(res) // 直接抛出异常
-//     }
-//   })
-// }
-
-export function showLoading (title) {
-  mpvue.showLoading({
-    title,
-    mask: true
+  return wx.cloud.callFunction({
+    name: 'getOpenId'
   })
 }
 
-export function hideLoading () {
-  mpvue.hideLoading()
+export function getUserInfo () {
+  return wx.cloud.callFunction({
+    name: 'getUserInfo'
+  })
 }
 
 export function showToast (title) {
   mpvue.showToast({
     title,
+    icon: 'success',
     duration: 2000
   })
-}
-
-export function setNavigationBarTitle (title) {
-  mpvue.setNavigationBarTitle({title})
-}
-
-export function getUserInfoDetail () {
-  return get('http://mock.51y.cc:81/mock/5ff9bb0f151bfc02d3ba697e/student/userinfo')
 }

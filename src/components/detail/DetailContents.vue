@@ -1,6 +1,5 @@
 <template>
   <div class="detail-contents-wrapper"> 
-    <!-- 不能加v-if="contents" -->
     <div class="detail-contents-title">
       书籍简介
       <img src="cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/detail/u103.png" class="under-line">
@@ -20,9 +19,6 @@
       book: Object
     },
     methods: {
-      readBook (nav) {
-        this.$emit('readBook', nav)
-      }
     }
   }
 </script>

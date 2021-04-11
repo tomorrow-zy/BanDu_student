@@ -2,8 +2,6 @@
   <div>
     <div class="content">
       <div class="content-wrapper">
-        <div class="background">
-        </div>
         <div class="user-head">
           <img class="user" src="/static/user/user-pic.png"/>
           <div class="user-name">{{username}}</div>
@@ -13,12 +11,7 @@
           <div class="functions-wrapper">
             <div class="border">
               <div>我的信息</div>
-              <div class="money-func">
-                <div>余额：</div>
-                <div>{{money}}</div>
-                <div>元</div>
-              </div>
-              <div>我的购书订单</div>
+              <div @click="showOpenId">家长绑定</div>
               <div>家长约定</div>
             </div>
             <div class="non-border">
@@ -46,7 +39,7 @@
 
 <script>
 import Bottom from '../../components/home/bottom'
-import { getUserInfoDetail } from '../../services/wechat'
+import { getStorageSync } from '../../services/wechat'
 export default {
   components: {
     Bottom
@@ -55,20 +48,21 @@ export default {
     return {
       money: 0,
       username: '',
-      signature: ''
+      signature: '',
+      stoptime: Date
     }
   },
   methods: {
-    getUserInfo () {
-      getUserInfoDetail().then(response => {
-        this.money = response.data.data.balance
-        this.username = response.data.data.username
-        this.signature = response.data.data.signature
+    showOpenId () {
+      var op = getStorageSync('openid')
+      wx.showModal({
+        title: '提示',
+        content: op,
+        success (res) {
+          console.log(res)
+        }
       })
     }
-  },
-  mounted () {
-    this.getUserInfo()
   }
 }
 </script>
@@ -109,7 +103,7 @@ export default {
 }
 .functions {
   margin: 15px 15px 0 15px; /*上右下左*/
-  height: 200px;
+  /* height: 200px; */
   border-radius: 15px;
   background-color: #fff;
 }
@@ -126,22 +120,10 @@ export default {
 .non-border div{
   padding:8px 10px 6px 15px;
 }
-.money-func{
-  display:flex;
-}
-.money-func div{
-  border-bottom: 0px;
-  padding:0px 0px 0px 0px; 
-}
 .others{
   margin: 15px 15px 0 15px; /*上右下左*/
   height: 80px;
   border-radius: 15px;
   background-color: #fff;
-}
-.change{
-  margin: 20px 15px 20px 15px; /*上右下左*/
-  border-radius: 15px;
-  font-weight: 750;
 }
 </style>

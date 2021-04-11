@@ -41,7 +41,7 @@
 <script>
 import SearchBar from '../../components/booklist/SearchBar'
 import ListDetail from '../../components/booklist/ListDetail'
-import {getBookIndex} from '../../services/bookServices'
+import {getBookIndex, getBookCatagory} from '../../services/bookServices'
 export default {
   components: {
     SearchBar,
@@ -64,21 +64,19 @@ export default {
     }
   },
   mounted () {
-    wx.cloud.database().collection('book_index').get()
-      .then(res => {
-        this.contentArray = res.data
-      }).catch(err => {
-        console.log('请求书籍信息失败', err)
-      })
-    wx.cloud.database().collection('catagory').doc('b00064a760658e090cdc9d754ca08647')
-      .get().then(res => {
-        this.catagoryArray = res.data.type
-        this.catagoryArray.unshift('全部类型')
-        this.difficultyArray = res.data.difficulty
-        this.difficultyArray.unshift('全部难度')
-      }).catch(err => {
-        console.log('请求书籍信息失败', err)
-      })
+    getBookIndex().then(res => {
+      this.contentArray = res.data
+    }).catch(err => {
+      console.log('请求书籍信息失败', err)
+    })
+    getBookCatagory().then(res => {
+      this.catagoryArray = res.data.type
+      this.catagoryArray.unshift('全部类型')
+      this.difficultyArray = res.data.difficulty
+      this.difficultyArray.unshift('全部难度')
+    }).catch(err => {
+      console.log('请求书籍信息失败', err)
+    })
   },
   methods: {
     onClear () {
@@ -113,12 +111,11 @@ export default {
       } else {
         wx.cloud.database().collection('book_index').where({
           type: _.elemMatch(_.eq(this.selection2))
-        }).get()
-          .then(res => {
-            this.contentArray = res.data
-          }).catch(err => {
-            console.log('请求书籍信息失败', err)
-          })
+        }).get().then(res => {
+          this.contentArray = res.data
+        }).catch(err => {
+          console.log('请求书籍信息失败', err)
+        })
       }
     },
     clickChange1 () {

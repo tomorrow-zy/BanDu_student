@@ -84,7 +84,7 @@
         <Bottom/>
       </div>
     </div>
-    <Auth v-if="!isAuth" @getUserInfo="init"/>
+    <Auth v-if="!isAuth" @getUserProfile="getUserProfile"/>
   </div>
 </template>
 
@@ -92,19 +92,20 @@
 import HomeBook from '../../components/home/homebook'
 import Banner from '../../components/home/banner'
 import Bottom from '../../components/home/bottom'
-import Auth from '../../components/base/Auth'
-import { getSetting, getUserInfo, setStorageSync, getStorageSync, getOpenId } from '../../services/wechat'
+import Auth from '../../components/base/user-login'
+import {formatTime} from '../../utils/index'
+// import {getWeekByDate} from '../../utils/index'
+import { setStorageSync, getStorageSync, getOpenId } from '../../services/wechat'
 export default {
   components: {
     HomeBook,
     Banner,
     Bottom,
-    // Report,
     Auth
   },
   data () {
     return {
-      isAuth: true,
+      isAuth: false,
       library: [],
       recommend: [],
       saying: '',
@@ -135,36 +136,6 @@ export default {
         }
       })
     },
-    getSetting () {
-      getSetting(
-        'userInfo',
-        () => {
-          this.isAuth = true
-          // showLoading('正在加载')
-          this.getUserInfo()
-        },
-        () => {
-          this.isAuth = false
-        }
-      )
-    },
-    getUserInfo () {
-      getUserInfo(
-        (userInfo) => {
-          console.log(userInfo)
-          setStorageSync('userInfo', userInfo)
-          const openId = getStorageSync('openId')
-          if (!openId || openId.length === 0) {
-            getOpenId()
-          } else {
-            console.log('已获得openId')
-          }
-        },
-        () => {
-          console.log('failed...')
-        }
-      )
-    },
     getBookData () {
       wx.cloud.database().collection('book_index').limit(6).get()
         .then(res => {
@@ -175,22 +146,80 @@ export default {
         })
     },
     getSayingData () {
-      wx.cloud.database().collection('saying').limit(1).get()
+      wx.cloud.database().collection('saying').get()
         .then(res => {
-          this.saying = res.data[0].saying_content
-          this.saying_author = res.data[0].saying_author
+          var n = Math.round(Math.random() * 10)
+          while (n >= res.data.length) {
+            n = Math.round(Math.random() * 10)
+          }
+          this.saying = res.data[n].saying_content
+          this.saying_author = res.data[n].saying_author
         }).catch(err => {
           console.log('请求名言警句失败', err)
         })
     },
-    init () {
-      this.getSetting()
-      this.getBookData()
-      this.getSayingData()
+    getSetting () {
+      var openid = getStorageSync('openid')
+      if (!openid || openid.length === 0) {
+        this.isAuth = false
+        this.getUserProfile()
+      } else {
+        this.isAuth = true
+        console.log('已获得openid')
+      }
+    },
+    getUserProfile () {
+      wx.getUserProfile({
+        desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        success: (res) => {
+          console.log(res)
+          this.isAuth = true
+          setStorageSync('userInfo', res.userInfo)
+          getOpenId().then(res => {
+            console.log(res)
+            setStorageSync('openid', res.result.event.userInfo.openId)
+          })
+        },
+        fail: res => {
+          console.log('获取用户信息失败', res)
+        }
+      })
+    },
+    getUserLogin () {
+      if (this.isAuth === true) {
+        wx.cloud.callFunction({
+          name: 'login'
+        }).then(res => {
+          console.log(res)
+          console.log('1:', res.result.data.length)
+          if (res.result.data.length === 0) {
+            wx.cloud.callFunction({
+              name: 'addStus'
+            }).then(res => {
+              console.log('用户添加成功！', res)
+            })
+          } else {
+            console.log('用户已存在！')
+          }
+        })
+      } else {
+        console.log('用户未查找！')
+      }
+    }
+  },
+  watch: {
+    isAuth (newValue, preValue) {
+      if (newValue !== preValue) {
+        this.getUserLogin()
+      }
     }
   },
   mounted () {
-    this.init()
+    this.getSetting()
+    this.getBookData()
+    this.getSayingData()
+    let time = formatTime(new Date())
+    console.log('123456', time, new Date(), new Date().getDay(), new Date().getTime())
   }
 }
 </script>

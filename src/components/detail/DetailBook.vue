@@ -8,7 +8,13 @@
     <div class="detail-info-r">
       <div class="1st">
         <div class="book-title">{{book.title}}</div>
-        <button class="add-shelf">加入书架</button>
+        <button
+          :class="isInShelf ? 'detail-btn-remove' : 'detail-btn-shelf'"
+          round
+          @click="handleShelf"
+        >
+          {{isInShelf ? '移出书架' : '加入书架'}}
+        </button>
       </div>
       <div class="2nd">
         <div class="book-author">作者：{{book.author}}</div>
@@ -41,7 +47,13 @@
       BookCard
     },
     props: {
+      isInShelf: Boolean,
       book: Object
+    },
+    methods: {
+      handleShelf () {
+        this.$emit('handleShelf')
+      }
     }
   }
 </script>
@@ -60,16 +72,29 @@
 .detail-info-r div{
   display: flex;
 }
-.add-shelf{
+.detail-btn-shelf {
   padding: 0;
   width: 85px;
   height: 30px;
-  color: #fff;
   font-size: 15px;
   font-weight: 500;
   line-height: 30px;
   text-align: center;
+  border-radius: 10px;
+  color: #fff;
   background-color: rgb(116,187,243);
+}
+.detail-btn-remove {
+  padding: 0;
+  width: 85px;
+  height: 30px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 10px;
+  color: #F96128;
+  background: rgba(255, 175, 155, .3);
 }
 .book-title {
   font-size: 16px;

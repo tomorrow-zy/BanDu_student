@@ -54,9 +54,6 @@ export default {
       this.isLoading = false
       this.error = true
     }
-    // onClick () {
-    //   this.$emit('onClick')
-    // }
   }
 }
 </script>

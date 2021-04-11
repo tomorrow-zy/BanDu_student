@@ -1,7 +1,7 @@
 <template>
   <div class="homebookcontent">
     <div class="row" v-for="(item, index) in data" :key="index">
-      <div class="bookwapper" @click="onBookClick(item)">
+      <div @click="onBookClick(item)">
         <BookCard :src="item.src" :text="item.title"/>
       </div>
     </div>

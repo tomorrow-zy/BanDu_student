@@ -6,7 +6,7 @@
         </div>
         <div class="user-head">
           <img class="user" src="/static/user/user-pic.png"/>
-          <div class="user-name">林林林</div>
+          <div class="user-name">{{username}}</div>
           <div class="user-saying">书山有路勤为径，学海无涯苦作舟。</div>
         </div>
         <div class="message">
@@ -16,8 +16,7 @@
               <div :class="{'isClick':ChildMessage}" @click="ChildMessageClick">家长留言</div>
             </div>
             <div class="message-content">
-              <MessageList
-                :messageList="messageList"
+              <MessageList :messageList="messageList"
               />
             </div>
           </div>
@@ -33,7 +32,7 @@
 <script>
 import MessageList from '../../components/message/MessageList'
 import Bottom from '../../components/home/bottom'
-import { getUserInfoDetail } from '../../services/wechat'
+import { getUserInfo, getStorageSync } from '../../services/wechat'
 export default {
   components: {
     MessageList,
@@ -41,6 +40,7 @@ export default {
   },
   data () {
     return {
+      username: '',
       SystemMessage: true,
       ChildMessage: false,
       SystemMessageList: [],
@@ -49,14 +49,6 @@ export default {
     }
   },
   methods: {
-    getUserInfo () {
-      getUserInfoDetail().then(response => {
-        this.username = response.data.data.username
-        this.signature = response.data.data.signature
-        this.SystemMessageList = response.data.data.sysmessage
-        this.ChildMessageList = response.data.data.parmessage
-      })
-    },
     SystemMessageClick () {
       this.SystemMessage = true
       this.ChildMessage = false
@@ -68,12 +60,13 @@ export default {
       this.messageList = this.ChildMessageList
     }
   },
-  onShow () {
-
-  },
   mounted () {
-    this.getUserInfo()
-    // this.messageList = this.SystemMessageList
+    var userInfo = getStorageSync('userInfo')
+    this.username = userInfo.nickName
+    getUserInfo().then(res => {
+      this.SystemMessageList = res.result.data[0].system_message
+      this.ChildMessageList = res.result.data[0].p_parent_message
+    })
   },
   watch: {
     SystemMessageList (newValue, preValue) {
@@ -91,6 +84,7 @@ export default {
   left: 0px;
   top: 0px;
   width: 100%;
+  height: 100%;
   padding-bottom: 50px;
   background: inherit;
   background-color: #65a4d5;
@@ -120,6 +114,7 @@ export default {
 }
 .message {
   margin: 15px 15px 20px 15px; /*上右下左*/
+  padding-bottom: 50px;
   border-radius: 15px;
   background-color: #fff;
 }
@@ -130,7 +125,6 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   font-size: 16px;
-  border-bottom: 2.2px solid #cccccc;
 }
 .message-content-head div {
   margin: 15px 1px 0px 1px;

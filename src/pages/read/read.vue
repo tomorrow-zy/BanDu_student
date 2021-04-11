@@ -1,7 +1,11 @@
 <template>
-    <div>
+  <div>
+    <van-count-down :time="time" />
+    <view class="content">
       {{content}}
-    </div>
+    </view>
+  </div>
+    
 </template>
 
 <script>
@@ -9,6 +13,7 @@ import {getBookInfo} from '../../services/bookServices'
 export default {
   data () {
     return {
+      time: 30 * 60 * 60 * 1000,
       content: ''
     }
   },
@@ -20,10 +25,14 @@ export default {
     await getBookInfo(obj.bookName).then(response => {
       console.log(response)
       this.content = response.data[0].content[obj.id]
+      this.content = this.content.split(' ').join('\n')
     })
   }
 }
 </script>
 
 <style>
+.content{
+  white-space: pre-wrap;
+}
 </style>

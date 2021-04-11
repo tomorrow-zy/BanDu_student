@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head" v-if="!isEdit">
+    <div class="head">
       <SearchBar
       :hotSearch="hotSearch" 
       :focus="searchFocus"
@@ -9,40 +9,22 @@
       />
       <div class="collection">我的收藏</div>
     </div>
-    <button 
-      v-else class="completeEdit" 
-      @click="completedEdit" 
-    >
-      完成
-    </button>
-    <div class="content-head">
-      <div :class="{'isClick':currentRead}" @click="currentReadClick">当前阅读</div>
-      <div :class="{'isClick':completeRead}" @click="completeReadClick">完成阅读</div>
-    </div>
     <div class="selection">
       <div class="screen" @click="screenClick">
         <img src="cloud://ban-du-1gingis66641beca.6261-ban-du-1gingis66641beca-1304714186/static/bookshelf/u1612.png" class="screen-picture"/>
         <div class="screen-text">筛选</div>
       </div> 
-      <div class="bought">已购买</div>
-      <div class="bought">未购买</div>
-      <div v-show="!isEdit" class="edit" @click="editing">编辑</div>
     </div>
     <ShelfList 
       :shelflist="shelfList" 
-      :editing="isEdit" 
-      :beSelected="shouldBeSelectedAll"
     />
-    <div class="bottom" v-if="!isEdit">
+    <div class="bottom">
       <Bottom/>
-    </div>
-    <div class="editBottom" v-else>
-      <EditBottom @handleChoose="handleChoose" :shelflist="shelfList"/>
     </div>
     <div v-if="screened" class="all-kinds-of-catagory">
       <div class="catagory-selection">
-        <div class="selection-button" v-for="(item,index) in catagoryArray" :key="index" @click="isSelect(index,item.id)">
-          <div :class="{'active':index===mark}">{{item.catalog}}</div>                                 
+        <div class="selection-button" v-for="(item,index) in catagoryArray" :key="index" @click="isSelect(index,item)">
+          <div :class="{'active':index===mark}">{{item}}</div>                                 
         </div>
       </div>
       <div class="catagoryConfirm">
@@ -58,7 +40,8 @@ import SearchBar from '../../components/bookshelf/SearchBar'
 import ShelfList from '../../components/bookshelf/ShelfList'
 import Bottom from '../../components/home/bottom'
 import EditBottom from '../../components/bookshelf/EditBottom'
-import {getShelfData} from '../../services/bookServices'
+import {getBookCatagory} from '../../services/bookServices'
+import {getUserInfo} from '../../services/wechat'
 export default {
   components: {
     SearchBar,
@@ -68,116 +51,48 @@ export default {
   },
   data () {
     return {
-      currentRead: true,
-      completeRead: false,
       screened: false,
-      confirmedId: 0,
-      isEdit: false,
-      shouldBeSelectedAll: false,
-      catagoryArray: [
-        {
-          id: 1,
-          catalog: '童话寓言'
-        },
-        {
-          id: 2,
-          catalog: '校园成长'
-        },
-        {
-          id: 3,
-          catalog: '诗歌散文'
-        },
-        {
-          id: 4,
-          catalog: '科普百科'
-        },
-        {
-          id: 5,
-          catalog: '名人励志'
-        },
-        {
-          id: 6,
-          catalog: '历史传记'
-        },
-        {
-          id: 7,
-          catalog: '科幻世界'
-        }
-      ],
+      catagoryArray: [],
       mark: 0,
-      currentReadList: [],
-      completeReadList: [],
       shelfList: []
     }
   },
-  // async created () {
-  //   await getBookCatagory().then(response => {
-  //     this.catagoryArray = response.data.result
-  //   })
-  // },
   methods: {
-    isSelect (i, id) {
+    isSelect (i, item) {
       this.mark = i
-      this.confirmedId = id
-      // getBookContent(id).then(response => {
-      //   console.log(response.data.result.data)
-      //   this.contentArray = response.data.result.data
-      // })
-    },
-    editing () {
-      this.isEdit = true
-      this.shouldBeSelectedAll = false
-    },
-    completedEdit () {
-      this.isEdit = false
-      this.shouldBeSelectedAll = true
     },
     screenClick () {
       this.screened = true
+      getBookCatagory().then(res => {
+        this.catagoryArray = res.data.type
+        this.catagoryArray.unshift('全部类型')
+      }).catch(err => {
+        console.log('请求书籍信息失败', err)
+      })
     },
     confirmSelect () {
-      // 执行确定之后的操作；
-      console.log('确定', this.confirmedId)
       this.screened = false
     },
     cancleSelect () {
-      console.log('取消')
       this.screened = false
-    },
-    currentReadClick () {
-      this.currentRead = true
-      this.completeRead = false
-      this.shelfList = this.currentReadList
-    },
-    completeReadClick () {
-      this.currentRead = false
-      this.completeRead = true
-      this.shelfList = this.completeReadList
-    },
-    handleChoose (haveChooseAll) {
-      console.log('hi..')
-      this.shouldBeSelectedAll = haveChooseAll
     }
   },
-  mounted () {
-    getShelfData().then(response => {
-      this.completeReadList = response.data.data.completeReadList
-      this.currentReadList = response.data.data.currentReadList
-      console.log(this.completeReadList, this.currentReadList)
-      this.shelfList = this.currentReadList
-      if ((JSON.stringify(this.currentReadList[this.currentReadList.length - 1]) !== '{}')) {
+  onShow () {
+    getUserInfo().then(res => {
+      console.log(res)
+      this.shelfList = res.result.data[0].bookshelf
+      console.log(this.shelfList)
+      if ((JSON.stringify(this.shelfList[this.shelfList.length - 1]) !== '{}')) {
         this.shelfList.push({})
       }
-      this.currentReadList = this.shelfList
+    }).catch(err => {
+      console.log('请求书籍信息失败', err)
     })
-  },
-  onShow () {
-
   }
 }
 </script>
 
-<style>
+<style scoped>
 .head{
   display: flex;
   margin: 0 10px;
@@ -202,18 +117,6 @@ export default {
   text-align: center;
   line-height: 35px;
 }
-.content-head{
-  margin: 0 20px;
-  padding: 0 70px 8px 70px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 16px;
-  border-bottom: 2.2px solid #eeeeee;
-}
-.content-head div{
-  padding-bottom: 3px;
-}
 .isClick{
   border-bottom: 2.5px inset #0da0f5 !important;
 }
@@ -221,14 +124,10 @@ export default {
   background-color: #87cce4 !important;
   color: white !important;
 }
-.content-head div:active{
-  /*关键代码*/
-
-  border-bottom:  3px solid rgb(72, 208, 241);
-}
 .selection{
   margin: 10px 26.5px;
   display: flex;
+  justify-content: space-between;
 }
 .screen{
   margin-top: 7px;
@@ -240,26 +139,6 @@ export default {
 .screen-picture{
   height: 20px;
   width: 20px;
-}
-.bought{
-  margin: 3px 0px 0 18px;
-  height: 25px;
-  width: 60px;
-  font-size: 12px;
-  line-height: 25px;
-  text-align: center;
-  border-radius: 5px;
-  background-color: #e4dede;
-}
-.edit{
-  margin: 3px 0px 0 75px;
-  height: 25px;
-  width: 50px;
-  font-size: 12px;
-  line-height: 25px;
-  text-align: center;
-  border-radius: 5px;
-  background-color: #e4dede;
 }
 .all-kinds-of-catagory{
   padding: 15px 0 15px 0;
