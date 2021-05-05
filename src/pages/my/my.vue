@@ -1,43 +1,47 @@
 <template>
-  <div>
-    <div class="content">
-      <div class="content-wrapper">
-        <div class="user-head">
-          <img class="user" src="/static/user/user-pic.png"/>
-          <div class="user-name">{{username}}</div>
-          <div class="user-saying">{{signature}}</div>
-        </div>
-        <div class="functions">
-          <div class="functions-wrapper">
-            <div class="border">
-              <div>我的信息</div>
-              <div @click="showOpenId">家长绑定</div>
-              <div>家长约定</div>
-            </div>
-            <div class="non-border">
-              <div>意见反馈</div>
+  <!-- <div> -->
+    <div>
+      <div class="content">
+        <div class="content-wrapper">
+          <div class="user-head">
+            <img class="user" src="/static/user/user-pic.png"/>
+            <div class="user-name">{{username}}</div>
+            <div class="user-saying">{{signature}}</div>
+          </div>
+          <div class="functions">
+            <div class="functions-wrapper">
+              <div class="border">
+                <div>我的信息</div>
+                <div @click="copyTextClick">家长绑定</div>
+                <div>家长约定</div>
+              </div>
+              <div class="non-border">
+                <div>意见反馈</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="others">
-          <div class="functions-wrapper">
-            <div class="border">
-              <div>设置</div>
-            </div>
-            <div class="non-border">
-              <div>关于我们</div>
+          <div class="others">
+            <div class="functions-wrapper">
+              <div class="border">
+                <div>设置</div>
+              </div>
+              <div class="non-border">
+                <div>关于我们</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="bottom">
+        <Bottom/>
+      </div>
     </div>
-    <div class="bottom">
-      <Bottom/>
-    </div>
-  </div>
+    <!-- <Openid :openid="op"/>
+  </div> -->
 </template>
 
 <script>
+// import Openid from '../../components/my/openid'
 import Bottom from '../../components/home/bottom'
 import { getStorageSync } from '../../services/wechat'
 export default {
@@ -46,20 +50,24 @@ export default {
   },
   data () {
     return {
-      money: 0,
-      username: '',
-      signature: '',
-      stoptime: Date
+      op: '',
+      isShow: false
     }
   },
   methods: {
-    showOpenId () {
+    copyTextClick () {
       var op = getStorageSync('openid')
-      wx.showModal({
-        title: '提示',
-        content: op,
-        success (res) {
-          console.log(res)
+      wx.setClipboardData({
+        data: op,
+        success: function () {
+          wx.getClipboardData({
+            success: function () {
+              wx.showToast({
+                icon: 'none',
+                title: 'ID复制成功'
+              })
+            }
+          })
         }
       })
     }

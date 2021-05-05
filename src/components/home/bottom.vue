@@ -24,9 +24,11 @@ export default {
       this.$router.replace('/pages/index/main')
     },
     onShelfClick () {
+      this.$emit('onGetSetting')
       this.$router.replace('/pages/bookshelf/main')
     },
     onInfoClick () {
+      this.$emit('onGetSetting')
       this.$router.replace('/pages/my/main')
     }
   }

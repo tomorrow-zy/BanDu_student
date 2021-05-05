@@ -18,11 +18,3 @@ export function getUserInfo () {
     name: 'getUserInfo'
   })
 }
-
-export function showToast (title) {
-  mpvue.showToast({
-    title,
-    icon: 'success',
-    duration: 2000
-  })
-}

@@ -39,27 +39,27 @@
 import SearchBar from '../../components/bookshelf/SearchBar'
 import ShelfList from '../../components/bookshelf/ShelfList'
 import Bottom from '../../components/home/bottom'
-import EditBottom from '../../components/bookshelf/EditBottom'
 import {getBookCatagory} from '../../services/bookServices'
-import {getUserInfo} from '../../services/wechat'
+import {getUserInfo, getStorageSync} from '../../services/wechat'
 export default {
   components: {
     SearchBar,
     ShelfList,
-    Bottom,
-    EditBottom
+    Bottom
   },
   data () {
     return {
       screened: false,
       catagoryArray: [],
       mark: 0,
-      shelfList: []
+      shelfList: [],
+      selectedItem: ''
     }
   },
   methods: {
     isSelect (i, item) {
       this.mark = i
+      this.selectedItem = item
     },
     screenClick () {
       this.screened = true
@@ -71,6 +71,34 @@ export default {
       })
     },
     confirmSelect () {
+      const op = getStorageSync('openid')
+      if (this.selectedItem === '全部类型') {
+        getUserInfo().then(res => {
+          this.shelfList = res.result.data[0].bookshelf
+          if ((JSON.stringify(this.shelfList[this.shelfList.length - 1]) !== '{}')) {
+            this.shelfList.push({})
+          }
+        }).catch(err => {
+          console.log('请求书籍信息失败', err)
+        })
+      } else {
+        var temp = []
+        wx.cloud.database().collection('usersInfo').where({
+          _openid: op
+        }).get().then(res => {
+          for (var i = 0; i < res.data[0].bookshelf.length; i++) {
+            if (res.data[0].bookshelf[i].type.includes(this.selectedItem)) {
+              temp.push(res.data[0].bookshelf[i])
+            }
+          }
+          this.shelfList = temp
+          if ((JSON.stringify(this.shelfList[this.shelfList.length - 1]) !== '{}')) {
+            this.shelfList.push({})
+          }
+        }).catch(err => {
+          console.log('请求书籍信息失败', err)
+        })
+      }
       this.screened = false
     },
     cancleSelect () {
@@ -79,9 +107,7 @@ export default {
   },
   onShow () {
     getUserInfo().then(res => {
-      console.log(res)
       this.shelfList = res.result.data[0].bookshelf
-      console.log(this.shelfList)
       if ((JSON.stringify(this.shelfList[this.shelfList.length - 1]) !== '{}')) {
         this.shelfList.push({})
       }

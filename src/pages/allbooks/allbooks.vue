@@ -63,7 +63,7 @@ export default {
       contentArray: []
     }
   },
-  mounted () {
+  onShow () {
     getBookIndex().then(res => {
       this.contentArray = res.data
     }).catch(err => {

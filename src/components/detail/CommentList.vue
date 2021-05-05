@@ -4,7 +4,7 @@
       <div class="header">
         <van-icon 
           class="comment-author"
-          name="https://b.yzcdn.cn/vant/icon-demo-1126.png" 
+          name="/static/user/icon-demo-1126.png" 
           size="28px"
         />
         <div class="nickname">{{label.nickname}}</div>

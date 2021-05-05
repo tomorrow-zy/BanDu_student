@@ -24,15 +24,17 @@
       </div>
       <div class="4th">
         <div class="detail-stat-rate-wrapper">
+          <span class="detail-stat-rate">轻点评分：</span>
           <van-rate
-          value="9.5"
+          :value="rateValue"
           :size="14"
           color="#FF9900"
           void-color="#DEE0E2"
           void-icon="star"
+          @change="onRateChange"
           >
           </van-rate>
-          <span class="detail-stat-rate">9.5分</span>
+          <span class="detail-stat-rate">{{rateValue}}分</span>
         </div>
       </div> 
     </div>
@@ -48,11 +50,15 @@
     },
     props: {
       isInShelf: Boolean,
-      book: Object
+      book: Object,
+      rateValue: Number
     },
     methods: {
       handleShelf () {
         this.$emit('handleShelf')
+      },
+      onRateChange (e) {
+        this.$emit('onRateChange', e.mp.detail)
       }
     }
   }
@@ -131,7 +137,7 @@
   display: flex;
 }
 .detail-stat-rate{
-  margin: 2px 30px 0 5px;
+  margin: 2px 5px 0 2px;
   font-size: 15px;
   font-weight: 500;
 }

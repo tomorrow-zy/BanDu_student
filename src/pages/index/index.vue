@@ -81,7 +81,7 @@
         </div>
       </div>
       <div class="bottom">
-        <Bottom/>
+        <Bottom @onGetSetting="getSetting"/>
       </div>
     </div>
     <Auth v-if="!isAuth" @getUserProfile="getUserProfile"/>
@@ -93,8 +93,6 @@ import HomeBook from '../../components/home/homebook'
 import Banner from '../../components/home/banner'
 import Bottom from '../../components/home/bottom'
 import Auth from '../../components/base/user-login'
-import {formatTime} from '../../utils/index'
-// import {getWeekByDate} from '../../utils/index'
 import { setStorageSync, getStorageSync, getOpenId } from '../../services/wechat'
 export default {
   components: {
@@ -105,7 +103,7 @@ export default {
   },
   data () {
     return {
-      isAuth: false,
+      isAuth: true,
       library: [],
       recommend: [],
       saying: '',
@@ -113,22 +111,27 @@ export default {
     }
   },
   methods: {
-    onHomeClick () {
-      this.$router.push('/pages/index/main')
-    },
+    // onHomeClick () {
+    //   this.$router.push('/pages/index/main')
+    // },
     onMyClick () {
+      this.getSetting()
       this.$router.push('/pages/my/main')
     },
     onMessageClick () {
+      this.getSetting()
       this.$router.push('/pages/message/main')
     },
     onAllBookClick () {
+      this.getSetting()
       this.$router.push('/pages/allbooks/main')
     },
     onBookShelfClick () {
+      this.getSetting()
       this.$router.push('/pages/bookshelf/main')
     },
     onHomeBookClick (book) {
+      this.getSetting()
       this.$router.push({
         path: '/pages/detail/main',
         query: {
@@ -160,23 +163,25 @@ export default {
     },
     getSetting () {
       var openid = getStorageSync('openid')
-      if (!openid || openid.length === 0) {
+      var nickName = getStorageSync('nickName')
+      if ((!openid || openid.length === 0) || (!nickName || nickName.length === 0)) {
         this.isAuth = false
         this.getUserProfile()
       } else {
         this.isAuth = true
-        console.log('已获得openid')
+        // console.log('已获得openid')
       }
     },
     getUserProfile () {
       wx.getUserProfile({
         desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
         success: (res) => {
-          console.log(res)
+          // console.log(res)
           this.isAuth = true
           setStorageSync('userInfo', res.userInfo)
+          setStorageSync('nickName', res.userInfo.nickName)
           getOpenId().then(res => {
-            console.log(res)
+            // console.log(res)
             setStorageSync('openid', res.result.event.userInfo.openId)
           })
         },
@@ -190,20 +195,22 @@ export default {
         wx.cloud.callFunction({
           name: 'login'
         }).then(res => {
-          console.log(res)
-          console.log('1:', res.result.data.length)
           if (res.result.data.length === 0) {
             wx.cloud.callFunction({
-              name: 'addStus'
-            }).then(res => {
-              console.log('用户添加成功！', res)
+              name: 'addStus',
+              data: {
+                nickName: getStorageSync('nickName')
+              }
             })
           } else {
-            console.log('用户已存在！')
+            wx.cloud.callFunction({
+              name: 'updateStus',
+              data: {
+                nickName: getStorageSync('nickName')
+              }
+            })
           }
         })
-      } else {
-        console.log('用户未查找！')
       }
     }
   },
@@ -215,11 +222,9 @@ export default {
     }
   },
   mounted () {
-    this.getSetting()
+    // this.getSetting()
     this.getBookData()
     this.getSayingData()
-    let time = formatTime(new Date())
-    console.log('123456', time, new Date(), new Date().getDay(), new Date().getTime())
   }
 }
 </script>

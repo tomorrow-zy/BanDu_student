@@ -2,7 +2,7 @@
   <div>
     <div class="list-wrapper" v-for="(item,index) in data" :key="index">
         <div class="list-content" @click="gotoBookDetail(item)">
-          <BookCardList :src="item.img"/>
+          <BookCardList :src="item.src"/>
           <div class="detail">
             <div class="row">
               <div class="bookname">{{item.title}}</div>

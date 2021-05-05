@@ -33,6 +33,7 @@
 import MessageList from '../../components/message/MessageList'
 import Bottom from '../../components/home/bottom'
 import { getUserInfo, getStorageSync } from '../../services/wechat'
+import {formatTime} from '../../utils/index'
 export default {
   components: {
     MessageList,
@@ -65,7 +66,13 @@ export default {
     this.username = userInfo.nickName
     getUserInfo().then(res => {
       this.SystemMessageList = res.result.data[0].system_message
+      for (var i = 0; i < this.SystemMessageList.length; i++) {
+        this.SystemMessageList[i].messageTime = formatTime(new Date(this.SystemMessageList[i].messageTime))
+      }
       this.ChildMessageList = res.result.data[0].p_parent_message
+      for (i = 0; i < this.ChildMessageList.length; i++) {
+        this.ChildMessageList[i].messageTime = formatTime(new Date(this.ChildMessageList[i].messageTime))
+      }
     })
   },
   watch: {

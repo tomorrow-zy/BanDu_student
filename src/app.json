@@ -20,7 +20,6 @@
     "van-button": "vant-weapp/dist/button/index",
     "van-icon": "vant-weapp/dist/icon/index",
     "van-dialog": "vant-weapp/dist/dialog/index",
-    "van-rate": "vant-weapp/dist/rate/index",
-    "van-count-down": "vant-weapp/dist/count-down/index"
+    "van-rate": "vant-weapp/dist/rate/index"
   }
 }

@@ -17,17 +17,12 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      messageList: Array
-    },
-    data () {
-      return {
-      }
-    },
-    methods: {
-    }
+
+export default {
+  props: {
+    messageList: Array
   }
+}
 </script>
 
 <style scoped>
@@ -53,7 +48,8 @@
 }
 .message-content {
   padding: 10px;
-  font-size: 18px;
+  font-size: 15px;
   color: #666666;
+  text-indent: 2em;
 }
 </style>
